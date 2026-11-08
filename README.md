@@ -2,19 +2,26 @@
 
 Free, open-source real-time loudness levelling for Chrome.
 
-**Current version:** 0.6.1. This is the tested DSP build; further interface simplification is planned.
+**Current version:** 0.7.0. The DSP algorithm is unchanged from the tested v0.6.1 build.
 
 ## Installation
 
 
 Unpack the ZIP, open `chrome://extensions`, enable Developer mode, and select **Load unpacked**. Remove or disable older copies first. Choose the folder containing `manifest.json`.
 
-Open Disney+ in Chrome, play a programme, then click **Start on this tab**. Chrome routes the captured audio through the extension. The extension performs all processing locally. The popup need not remain open.
+Open Disney+ in Chrome, play a programme, then click **Enable for this tab**. Chrome routes the captured audio through the extension. The extension performs all processing locally. The popup need not remain open.
+
+The popup is intentionally simple: **Enable for this tab** and **Disable for this tab**. The toolbar waveform is **green when levelling is active on the selected tab** and **grey otherwise**. Capture can continue if you switch tabs or close the popup; when you return to a captured tab, its icon reflects its state.
+
+Expand **Advanced settings** to access:
 
 - **Target loudness**: −50 to −12 LUFS, initially −28. Lower means quieter.
 - **Levelling strength**: 0–100%, initially 100. Higher means less variation in programme loudness, within the gain limits.
-- **Enable levelling**: disables gain processing for a bypass comparison.
-- **Graph**: input 3-second loudness, estimated post-gain loudness, target; it resets when you reopen the popup.
+- **Enable processing**: bypass the leveller without stopping capture. The icon goes grey while bypassed.
+- **Reset defaults**: restores −28 LUFS, 100% strength and processing enabled.
+- **Diagnostics**: input 3-second loudness, estimated post-gain loudness, target, and live graph. The graph resets when the popup reopens.
+
+Settings persist across captures. Enabling the extension on another tab transfers capture to that tab. There is only one captured tab at a time.
 
 ## DSP behaviour
 

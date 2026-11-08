@@ -8,9 +8,9 @@ function rpc(type,extra={}) {
   });
 }
 function setActive(value) {
-  active=value;$('status').textContent=active?'● Capturing':'Not capturing';
+  active=value;$('status').textContent=active?'● Enabled':'Inactive';
   $('status').style.color=active?'#81dca9':'#a7b1c0';
-  $('toggle').textContent=active?'Stop capture':'Start on this tab';
+  $('toggle').textContent=active?'Disable for this tab':'Enable for this tab';
   $('toggle').disabled=working;
 }
 function fmt(n,unit){return Number.isFinite(n)?`${n.toFixed(1)} ${unit}`:'—';}
@@ -68,6 +68,14 @@ $('target').addEventListener('input',()=>{
     $('error').textContent=e.message;$('error').hidden=false;
   });
 });
+$('defaults').addEventListener('click', async()=>{
+  target=-28;strength=100;enabled=true;
+  $('target').value=target;$('targetValue').textContent=`${target} LUFS`;
+  $('strength').value=strength;$('strengthValue').textContent=`${strength}%`;
+  $('enabled').checked=true;
+  try { await rpc('settings',{settings:{target,strength,enabled}}); }
+  catch(e){$('error').textContent=e.message;$('error').hidden=false;}
+});
 $('enabled').addEventListener('change',async()=>{
   enabled=$('enabled').checked;
   try{await rpc('settings',{settings:{enabled}})}
@@ -75,15 +83,15 @@ $('enabled').addEventListener('change',async()=>{
 });
 chrome.runtime.onMessage.addListener(msg=>{
   if(msg.type==='capture-ended'){setActive(false);return;}
-  if(msg.type!=='meter')return;
-  if(!active)setActive(true);
+  if(msg.type!=='meter'||!active)return;
   history.push({input:msg.input,output:msg.output,ceiling:msg.target});
   if(history.length>MAX)history.shift();
   $('source').textContent=fmt(msg.input,'LUFS');
   $('output').textContent=fmt(msg.output,'LUFS');
   $('gain').textContent=fmt(msg.gain,'dB');
-  draw();
+  if ($('advanced').open) draw();
 });
+$('advanced').addEventListener('toggle',()=>{if($('advanced').open)draw();});
 (async()=>{
   try {
     const prefs=await chrome.storage.local.get({enabled:true,strength:100,target:-28});

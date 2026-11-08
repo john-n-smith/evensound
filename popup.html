@@ -1,26 +1,44 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Loudness Leveller</title><link rel="stylesheet" href="popup.css"></head><body>
-<header><h1>Loudness Leveller</h1><span id="status">Not capturing</span></header>
-<main>
-  <button id="toggle">Start on this tab</button>
-  <p id="error" role="alert" hidden></p>
-  <div class="controls">
-    <label for="target">Target loudness <strong id="targetValue">−28 LUFS</strong></label>
-    <input type="range" id="target" min="-50" max="-12" step="1" value="-28">
-    <div class="range"><span>Quieter</span><span>Louder</span></div>
-    <label for="strength" class="control-second">Levelling strength <strong id="strengthValue">100%</strong></label>
-    <input type="range" id="strength" min="0" max="100" step="5" value="100">
-    <div class="range"><span>Original dynamics</span><span>More consistent</span></div>
-    <p class="hint">Target sets the programme's average loudness. Strength controls how aggressively loud and quiet sections are brought towards it. Use your Mac's volume control for final listening level.</p>
-    <label class="bypass"><input type="checkbox" id="enabled" checked> Enable levelling <small>(untick to compare)</small></label>
-  </div>
-  <div class="meters">
-    <div><small>Source (3 s)</small><strong id="source">—</strong></div>
-    <div><small>Output (estimated)</small><strong id="output">—</strong></div>
-    <div><small>Applied gain</small><strong id="gain">—</strong></div>
-  </div>
-  <canvas id="chart" width="840" height="340" aria-label="Source and estimated output loudness history"></canvas>
-  <div class="legend"><span class="source">Source LUFS</span><span class="output">Estimated output</span><span class="target">Target LUFS</span></div>
-  <p class="note">The processor measures 400 ms momentary and 3-second short-term K-weighted loudness. It attenuates quickly when audio gets loud and recovers slowly. Silence is not deliberately amplified. Peak limiting can prevent the output reaching the target. Output is estimated from input loudness and applied gain, not independently metered. This is an experimental leveller, not a certified loudness meter. Settings persist when capture stops; the graph resets.</p>
-</main><script src="popup.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EvenSound</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div><h1>EvenSound</h1><p>Consistent volume for streaming</p></div>
+    <span id="status" role="status">Inactive</span>
+  </header>
+  <main>
+    <button id="toggle">Enable for this tab</button>
+    <p id="error" role="alert" hidden></p>
+    <details id="advanced">
+      <summary>Advanced settings</summary>
+      <section class="settings">
+        <label for="target">Target loudness <strong id="targetValue">−28 LUFS</strong></label>
+        <input type="range" id="target" min="-50" max="-12" step="1" value="-28">
+        <div class="range"><span>Quieter</span><span>Louder</span></div>
+        <label for="strength" class="control-second">Levelling strength <strong id="strengthValue">100%</strong></label>
+        <input type="range" id="strength" min="0" max="100" step="5" value="100">
+        <div class="range"><span>Original dynamics</span><span>Maximum consistency</span></div>
+        <label class="bypass"><input type="checkbox" id="enabled" checked> Enable processing (bypass when off)</label>
+        <button class="secondary" id="defaults">Reset defaults</button>
+      </section>
+      <section class="diagnostics">
+        <h2>Diagnostics</h2>
+        <div class="meters">
+          <div><small>Source (3 s)</small><strong id="source">—</strong></div>
+          <div><small>Output (estimated)</small><strong id="output">—</strong></div>
+          <div><small>Applied gain</small><strong id="gain">—</strong></div>
+        </div>
+        <canvas id="chart" width="840" height="340" aria-label="Source and estimated output loudness history"></canvas>
+        <div class="legend"><span class="source">Source LUFS</span><span class="output">Estimated output</span><span class="target">Target LUFS</span></div>
+        <p class="note">Output loudness is estimated from input and gain, not independently measured. Silence protection and limiting may prevent reaching the target. The graph resets when the popup closes.</p>
+      </section>
+    </details>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
