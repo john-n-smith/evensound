@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "EvenSound",
+  "version": "0.6.1",
+  "description": "Keep streaming audio at a consistent perceived loudness in Chrome.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "activeTab",
+    "tabCapture",
+    "offscreen",
+    "storage"
+  ],
+  "action": {
+    "default_title": "EvenSound",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
