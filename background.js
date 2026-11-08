@@ -9,19 +9,38 @@ async function hasOffscreen() {
   return contexts.length > 0;
 }
 
-async function badge(text, color) {
-  await chrome.action.setBadgeText({text});
-  if (color) await chrome.action.setBadgeBackgroundColor({color});
+const ICONS = {
+  enabled: {16:'icons/enabled-16.png',32:'icons/enabled-32.png',48:'icons/enabled-48.png',128:'icons/enabled-128.png'},
+  disabled: {16:'icons/disabled-16.png',32:'icons/disabled-32.png',48:'icons/disabled-48.png',128:'icons/disabled-128.png'}
+};
+
+async function setTabIcon(id, enabled) {
+  if (id == null) return;
+  try { await chrome.action.setIcon({tabId:id,path:ICONS[enabled?'enabled':'disabled']}); }
+  catch (error) { console.debug('Could not update icon for tab', id, error); }
+}
+
+async function capturedTab() {
+  const saved = await chrome.storage.session.get('capturedTabId');
+  return saved.capturedTabId ?? null;
+}
+
+async function syncCapturedIcon() {
+  const id = await capturedTab();
+  if (id === null) return;
+  const settings = await chrome.storage.local.get({enabled:true});
+  await setTabIcon(id, settings.enabled && await hasOffscreen());
 }
 
 async function stop() {
+  const previousTab = await capturedTab();
   if (await hasOffscreen()) {
     try { await chrome.runtime.sendMessage({target:'offscreen', type:'stop'}); } catch {}
     await chrome.offscreen.closeDocument();
   }
   tabId = null;
   await chrome.storage.session.remove('capturedTabId');
-  await badge('', '#287a43');
+  await setTabIcon(previousTab, false);
   return {ok:true, active:false};
 }
 
@@ -43,7 +62,7 @@ async function start(tab) {
     if (!answer?.ok) throw Error(answer?.error || 'Could not start the audio processor');
     tabId = tab.id;
     await chrome.storage.session.set({capturedTabId:tabId});
-    await badge('ON','#287a43');
+    await setTabIcon(tabId, settings.enabled);
     return {ok:true,active:true,tabId};
   } catch (err) {
     await stop();
@@ -57,11 +76,13 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
     if (msg.type === 'state') {
       const exists = await hasOffscreen();
       const stored = await chrome.storage.session.get('capturedTabId');
-      return {ok:true, active:exists, tabId:stored.capturedTabId ?? null};
+      const [current] = await chrome.tabs.query({active:true,currentWindow:true});
+      return {ok:true, active:exists && stored.capturedTabId===current?.id,
+        captureActive:exists, tabId:stored.capturedTabId ?? null};
     }
     if (msg.type === 'toggle') {
-      if (await hasOffscreen()) return stop();
       const [tab] = await chrome.tabs.query({active:true,currentWindow:true});
+      if (await hasOffscreen() && tab?.id===await capturedTab()) return stop();
       return start(tab);
     }
     if (msg.type === 'settings') {
@@ -70,6 +91,7 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
       if (Number.isFinite(msg.settings.strength)) settings.strength = Math.max(0,Math.min(100,msg.settings.strength));
       if (Number.isFinite(msg.settings.target)) settings.target = Math.max(-50,Math.min(-12,msg.settings.target));
       await chrome.storage.local.set(settings);
+      if (typeof settings.enabled === 'boolean') await syncCapturedIcon();
       if (await hasOffscreen()) return chrome.runtime.sendMessage({target:'offscreen',type:'settings',settings});
       return {ok:true};
     }
@@ -91,9 +113,15 @@ chrome.tabs.onRemoved.addListener(async id => {
 
 chrome.runtime.onMessage.addListener(msg => {
   if (msg.type === 'gain-snapshot' && Number.isFinite(msg.gainDb)) {
-    chrome.storage.session.set({lastGainDb:msg.gainDb,lastGainTabId:tabId}).catch(console.error);
+    capturedTab().then(id => {
+      if (id !== null) return chrome.storage.session.set({lastGainDb:msg.gainDb,lastGainTabId:id});
+    }).catch(console.error);
   }
   if (msg.type === 'capture-ended') {
     stop().catch(console.error);
   }
 });
+
+// On service-worker restarts, restore the icon for the captured tab.
+chrome.runtime.onStartup.addListener(() => { syncCapturedIcon().catch(console.error); });
+chrome.runtime.onInstalled.addListener(() => { syncCapturedIcon().catch(console.error); });

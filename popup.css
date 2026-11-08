@@ -1,7 +1,25 @@
-:root{font-family:system-ui,-apple-system,sans-serif;color:#e9edf7;background:#101723}*{box-sizing:border-box}body{width:440px;margin:0}header{padding:16px 18px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2b3340}h1{font-size:17px;margin:0}#status{font-size:11px;color:#a7b1c0}main{padding:16px 18px}button{width:100%;background:#79a8ff;color:#071427;border:0;border-radius:8px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}button:disabled{opacity:.5;cursor:wait}#error{color:#ffb4a9;font-size:12px}.controls{margin-top:20px}label{display:block;font-size:13px}label strong{float:right;font-variant-numeric:tabular-nums}input[type=range]{width:100%;margin:12px 0 2px;accent-color:#79a8ff}.range{display:flex;justify-content:space-between;font-size:11px;color:#98a5b7}.bypass{margin:20px 0;display:flex;gap:9px;align-items:center}.bypass input{accent-color:#79a8ff}.bypass small{font-size:10px;color:#a9b1bd}.meters{display:flex;justify-content:space-between;gap:5px;margin-bottom:16px}.meters>div{background:#1d2837;border-radius:8px;padding:10px;flex:1}.meters small{display:block;color:#aeb7c5;font-size:10px}.meters strong{display:block;font-size:17px;margin-top:3px;font-variant-numeric:tabular-nums}canvas{width:100%;height:auto;display:block;background:#172231;border-radius:8px}.legend{display:flex;gap:14px;margin:10px 0;font-size:11px;color:#b8c4d3}.legend span:before{content:'●';margin-right:5px}.source:before{color:#e7b965}.output:before{color:#68d9a2}.target:before{color:#9ca9ff}.note{font-size:11px;color:#99a6b8;line-height:1.5;margin:14px 0 0}
-
-button.secondary{margin:9px 0 22px;background:#283951;color:#e9edf7;border:1px solid #4a617b}.setting-detail{font-size:12px;color:#aeb7c5;margin:10px 0 0}.setting-detail strong{color:#e9edf7}.controls label{margin-top:5px}
-
-.hint{font-size:12px;line-height:1.5;color:#acb8c9;margin-top:12px}.setting-detail{display:flex;justify-content:space-between;gap:10px}.setting-detail strong{font-variant-numeric:tabular-nums}
-
-.control-second{margin-top:19px!important}
+:root{font-family:system-ui,-apple-system,sans-serif;color:#e9edf7;background:#101723}
+*{box-sizing:border-box}
+body{width:370px;margin:0}
+header{padding:18px;display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #2b3340}
+h1{font-size:18px;margin:0 0 4px}header p{font-size:11px;color:#aeb8c8;margin:0}
+#status{font-size:11px;color:#a7b1c0;white-space:nowrap}
+main{padding:18px}
+button{width:100%;background:#79a8ff;color:#071427;border:0;border-radius:9px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}#error{color:#ffb4a9;font-size:12px;line-height:1.4}
+#advanced{margin-top:18px}summary{color:#b9c6d7;font-size:12px;font-weight:600;cursor:pointer;padding:6px 2px}
+summary:hover{color:#fff}.settings{padding-top:17px}label{display:block;font-size:12px}
+label strong{float:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;margin:13px 0 2px;accent-color:#79a8ff}
+.range{display:flex;justify-content:space-between;font-size:10px;color:#98a5b7}
+.control-second{margin-top:20px}.bypass{margin-top:20px;display:flex;gap:8px;align-items:center}
+.bypass input{accent-color:#79a8ff}
+.secondary{margin-top:18px;background:#283951;color:#e9edf7;border:1px solid #4a617b}
+.diagnostics{margin-top:25px;border-top:1px solid #2b3340;padding-top:16px}
+h2{font-size:13px;margin:0 0 12px}.meters{display:flex;justify-content:space-between;gap:5px;margin-bottom:14px}
+.meters>div{background:#1d2837;border-radius:8px;padding:9px;flex:1;min-width:0}
+.meters small{display:block;color:#aeb7c5;font-size:9px}.meters strong{display:block;font-size:14px;margin-top:4px;font-variant-numeric:tabular-nums}
+canvas{width:100%;height:auto;display:block;background:#172231;border-radius:8px}
+.legend{display:flex;gap:12px;margin:10px 0;font-size:10px;color:#b8c4d3}
+.legend span:before{content:'●';margin-right:5px}.source:before{color:#e7b965}.output:before{color:#68d9a2}.target:before{color:#9ca9ff}
+.note{font-size:10px;color:#99a6b8;line-height:1.5;margin:12px 0 0}
